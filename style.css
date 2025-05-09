@@ -21,3 +21,29 @@ body {
     filter: brightness(1.2);
   }
   
+  #keyboard-visualizer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  #keyboard-visualizer span {
+    display: inline-block;
+    width: 30px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    border: 2px solid #555;
+    border-radius: 5px;
+    background-color: #eee;
+    font-family: monospace;
+    font-size: 1.2em;
+    transition: background-color 0.2s, transform 0.1s;
+  }
+  
+  #keyboard-visualizer span.active {
+    background-color: #ffcc00;
+    transform: scale(1.2);
+  }
+  
