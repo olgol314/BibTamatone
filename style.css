@@ -1,0 +1,23 @@
+body {
+    margin: 0;
+    background: #f5f5f5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+  }
+  
+  .container {
+    text-align: center;
+  }
+  
+  #otamatone {
+    width: 300px;
+    transition: transform 0.1s ease;
+  }
+  
+  .playing {
+    transform: scale(1.05);
+    filter: brightness(1.2);
+  }
+  
