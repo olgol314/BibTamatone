@@ -21,7 +21,7 @@ document.addEventListener("keydown", (e) => {
   if (!pressedKeys.has(key) && isPlayableKey(key)) {
     pressedKeys.add(key);
     playSound(key);
-    animateOtamatone();
+    animateOtamatone(true); // 입을 연다
   }
 });
 
@@ -33,6 +33,10 @@ document.addEventListener("keyup", (e) => {
     const source = activeSources.get(key);
     source.stop();
     activeSources.delete(key);
+  }
+
+  if (pressedKeys.size === 0) {
+    animateOtamatone(false); // 모든 키가 떼졌을 때 입을 닫는다
   }
 });
 
@@ -60,11 +64,15 @@ function playSound(key) {
   activeSources.set(key, source);
 }
 
-function animateOtamatone() {
+function animateOtamatone(open) {
   const otamatone = document.getElementById("otamatone");
-  otamatone.classList.add("playing");
-  setTimeout(() => otamatone.classList.remove("playing"), 150);
+  if (open) {
+    otamatone.src = "images/otamatone_open.png";   // 입 연 이미지
+  } else {
+    otamatone.src = "images/otamatone_closed.png"; // 입 닫은 이미지
+  }
 }
+
 
 // 첫 로딩 시 오디오 버퍼 미리 로드
 loadBuffer();
