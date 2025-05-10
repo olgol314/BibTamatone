@@ -17,18 +17,16 @@ const playbackRates = {
 };
 
 document.addEventListener("keydown", (e) => {
-  setKeyVisual(key, true);
-
   const key = e.key;
   if (!pressedKeys.has(key) && isPlayableKey(key)) {
     pressedKeys.add(key);
     playSound(key);
     animateOtamatone(true); // 입을 연다
   }
+  setKeyVisual(key, true);
 });
 
 document.addEventListener("keyup", (e) => {
-  setKeyVisual(key, false);
 
   const key = e.key;
   pressedKeys.delete(key);
@@ -42,6 +40,8 @@ document.addEventListener("keyup", (e) => {
   if (pressedKeys.size === 0) {
     animateOtamatone(false); // 모든 키가 떼졌을 때 입을 닫는다
   }
+
+  setKeyVisual(key, false);
 });
 
 function setKeyVisual(key, active) {
