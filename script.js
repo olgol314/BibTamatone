@@ -4,20 +4,19 @@ const context = new (window.AudioContext || window.webkitAudioContext)();
 let sharedBuffer = null;
 
 const playbackRates = {
-  1: 0.5946,  // C
-  q: 0.6299,  // C#
-  2: 0.6674,  // D
-  w: 0.7071,  // D#
-  3: 0.7491,  // E
-  4: 0.7943,  // F
-  r: 0.8414,  // F#
-  5: 0.8909,  // G
-  t: 0.9439,  // G#
-  6: 1.0,     // A
-  y: 1.0595,  // A#
-  7: 1.1225,  // B
-  8: 1.1892   // High C
+  1: { natural: 0.8909, sharp: 0.9439 },  // C, C#
+  2: { natural: 1.0, sharp: 1.0595 },     // D, D#
+  3: { natural: 1.1225, sharp: null },    // E, no E#
+  4: { natural: 1.1892, sharp: 1.2599 },  // F, F#
+  5: { natural: 1.3348, sharp: 1.4142 },  // G, G#
+  6: { natural: 1.4983, sharp: 1.5874 },  // A, A#
+  7: { natural: 1.6818, sharp: null },    // B, no B#
+  8: { natural: 1.7818, sharp: 1.8877 },  // C', C#'
+  9: { natural: 2.0, sharp: 2.1190 },     // D', D#'
+  0: { natural: 2.2449, sharp: null },    // E', no E#'
 };
+
+
 
 
 function isPlayableKey(key) {
@@ -27,16 +26,20 @@ function isPlayableKey(key) {
 
 document.addEventListener("keydown", (e) => {
   const key = e.key;
+
+  // 기본적인 조건 필터
   if (!pressedKeys.has(key) && isPlayableKey(key)) {
     pressedKeys.add(key);
-    playSound(key);
-    animateOtamatone(true); // 입을 연다
+
+    const isSharp = e.code === "Space" || e.getModifierState("Shift");
+
+    playSound(key, isSharp);
+    animateOtamatone();
   }
-  setKeyVisual(key, true);
 });
 
-document.addEventListener("keyup", (e) => {
 
+document.addEventListener("keyup", (e) => {
   const key = e.key;
   pressedKeys.delete(key);
 
@@ -45,13 +48,8 @@ document.addEventListener("keyup", (e) => {
     source.stop();
     activeSources.delete(key);
   }
-
-  if (pressedKeys.size === 0) {
-    animateOtamatone(false); // 모든 키가 떼졌을 때 입을 닫는다
-  }
-
-  setKeyVisual(key, false);
 });
+
 
 function setKeyVisual(key, active) {
   const el = document.querySelector(`#keyboard-visualizer span[data-key="${key}"]`);
@@ -78,16 +76,21 @@ function loadBuffer() {
     });
 }
 
-function playSound(key) {
-  if (!sharedBuffer) return;
+function playSound(key, isSharp = false) {
+  const rates = playbackRates[key];
+  if (!rates) return;
+
+  const rate = isSharp ? rates.sharp : rates.natural;
+  if (!rate) return;  // 유효하지 않은 샵 음은 무시
 
   const source = context.createBufferSource();
   source.buffer = sharedBuffer;
-  source.playbackRate.value = playbackRates[key];
+  source.playbackRate.value = rate;
   source.connect(context.destination);
   source.start();
   activeSources.set(key, source);
 }
+
 
 function animateOtamatone(open) {
   const otamatone = document.getElementById("otamatone");
