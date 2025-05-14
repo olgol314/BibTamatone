@@ -4,17 +4,26 @@ const context = new (window.AudioContext || window.webkitAudioContext)();
 let sharedBuffer = null;
 
 const playbackRates = {
-  1: 0.7491, // 기준음보다 -4 반음
-  2: 0.8409, // 기준음보다 -2 반음
-  3: 1.0, // 기준음 (Base pitch)
-  4: 1.1225, // 기준음보다 +2 반음
-  5: 1.2599, // 기준음보다 +4 반음
-  6: 1.3348, // +5 반음
-  7: 1.4142, // +6 반음
-  8: 1.4983, // +7 반음
-  9: 1.5874, // +8 반음
-  0: 1.6818, // +9 반음
+  1: 0.5946,  // C
+  q: 0.6299,  // C#
+  2: 0.6674,  // D
+  w: 0.7071,  // D#
+  3: 0.7491,  // E
+  4: 0.7943,  // F
+  r: 0.8414,  // F#
+  5: 0.8909,  // G
+  t: 0.9439,  // G#
+  6: 1.0,     // A
+  y: 1.0595,  // A#
+  7: 1.1225,  // B
+  8: 1.1892   // High C
 };
+
+
+function isPlayableKey(key) {
+  return Object.keys(playbackRates).includes(key);
+}
+
 
 document.addEventListener("keydown", (e) => {
   const key = e.key;
